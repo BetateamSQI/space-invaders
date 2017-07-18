@@ -221,15 +221,15 @@ function checkLife(){
 		livesLeft.innerHTML -=1;
 		repositioning();
 }else if(livesLeft.innerHTML==1){
-		livesLeft.innerHTML = 0;
+		//livesLeft.innerHTML = 0;
 		//location.reload();
 		livesLeft.innerHTML=3;
 		lose.play();
 		repositioning();
-		if(scoreBoard.innerHTML>highScore.innerHTML){
-			highScore.innerHTML = scoreBoard.innerHTML;
+		if(parseInt(scoreBoard.innerHTML)>parseInt(highScore.innerHTML)){
+			highScore.innerHTML = parseInt(scoreBoard.innerHTML);
 		}
-		scoreBoard.innerHTML=0;	//bug;	
+		scoreBoard.innerHTML=0;		
 	}
 
 }

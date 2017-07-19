@@ -94,6 +94,7 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var bulletArray=[];
+//var bulletArray2=[];
 //sound
 var explode = new Audio('sound/explosion.mp3');
 var laser = new Audio('sound/laserr.mp3');
@@ -140,7 +141,12 @@ function keyDownHandler(e){
 		downPressed = true
 	}
 	if(e.keyCode == 32){
+		if(playLevel.innerHTML==4){
+		bulletArray.push([shuttle_x+12, shuttle_y-34, 5,30]);
+		bulletArray.push([shuttle_x+shuttle_width-19, shuttle_y-34, 5,30]);}
+		else{
 		bulletArray.push([shuttle_x+(shuttle_width/2)-3, shuttle_y-34, 5,30]);
+		}
 		laser.play();
 	}
 }
@@ -175,7 +181,11 @@ function drawShuttle(){
 }
 function drawBullet(){
 	for(var i=0; i<bulletArray.length; i++){
+		if(playLevel.innerHTML==4){
+			ctx.fillStyle = "white";
+		}else{
 		ctx.fillStyle = "red";
+	}
 		ctx.fillRect(bulletArray[i][0], bulletArray[i][1], bulletArray[i][2], bulletArray[i][3]);
 		if(bulletArray[i][1]>-35){
 			bulletArray[i][1] -= 10;
@@ -186,14 +196,11 @@ function hitBullet(){
 	for(var i=0; i<bulletArray.length; i++){
 		for(var j=0; j<enemyArray.length; j++){
 			if(bulletArray[i][0]>=enemyArray[j][0] && bulletArray[i][0]<=enemyArray[j][2]+enemyArray[j][0] && bulletArray[i][1]<=enemyArray[j][1]+enemyArray[j][2] && bulletArray[i][1]>=enemyArray[j][1]){
-				//remove = true;
 				enemyArray.splice(j,1);
 				enemyArray.push([(Math.random()*800), -130, enemy_width, enemy_height,ppf]);
-				//if(remove==true){
 				bulletArray.splice(i,1);
-				//remove=false;
 				scoreBoard.innerHTML=parseInt(scoreBoard.innerHTML)+5;
-				//}
+				
 			}
 		}
 	}
@@ -229,7 +236,7 @@ function checkLife(){
 		if(parseInt(scoreBoard.innerHTML)>parseInt(highScore.innerHTML)){
 			highScore.innerHTML = parseInt(scoreBoard.innerHTML);
 		}
-		scoreBoard.innerHTML=0;		
+		scoreBoard.innerHTML=0;	
 	}
 
 }
@@ -268,11 +275,16 @@ function level(){
 	if(scoreBoard.innerHTML>=1000 && scoreBoard.innerHTML<1800){
 		playLevel.innerHTML = 2;
 		ppf=2;
-		sppf=5
-	}else if(scoreBoard.innerHTML>=1800){
+		sppf=5;
+		
+	}else if(scoreBoard.innerHTML>=1800 && scoreBoard.innerHTML<3000){
 		playLevel.innerHTML = 3;
-		ppf=5;
+		ppf=3.5;
 		sppf=7;
+	}else if(scoreBoard.innerHTML>=3000){
+		playLevel.innerHTML = 4;
+		ppf = 5;
+		sppf = 9;
 	}else{
 		playLevel.innerHTML = 1;
 		ppf=1;
@@ -286,10 +298,11 @@ function home(){
 	drawShuttle();
 	drawEnemy();
 	moveEnemy();
+	level();
 	drawBullet();
 	hitBullet();
 	shuttleCollide();
-	level();
+	
 //}
 }
 setInterval(home,20);

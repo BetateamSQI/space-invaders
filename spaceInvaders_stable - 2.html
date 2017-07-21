@@ -2,7 +2,14 @@
 <html>
 <head>
 	<title>stable-2</title>
-	<link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap/css/homepage.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap/js/bootstrap.min.js">
+  <link rel="stylesheet" type="text/css" href="bootstrap/js/jquery-3.1.1.js">
+	<script type="text/javascript" src="bootstrap/js/jquery-3.1.1.js"></script>
+	<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
 	<style>
 	body{
 		background: #000000;
@@ -15,71 +22,108 @@
 		padding: 0;
 
 	}
-	.col-md-3{
-		height: 654px;
-		background: #000000;
-		border: 1px red solid;
-		padding: 2% 1%;
-		color: white;
-		font-size: 18px;
-		line-height: 3
-	}
 	.glyphicon-heart{
 		color:red;
 		font-size: 30px;
 	}
+	
+	#tab
+	{
+		border-radius: none;
+		background-color:grey;
+		color: white;
+		border: none;
+	}
 	canvas{ 
+		margin-top: 5%;
 		background-image: url('images/space-mod.jpg');
-		margin: 0;
-		padding: 0;
-		border: solid 1px red;
+		border: 10px ridge grey;
+	}
+	.style
+	{
+		font-size: 30px;
+		color: white;
+	}
+	.styles
+	{
+		font-size: 25px;
+		color: green;
 	}
 	</style>
 </head>
-<body>
+<body id="bhody">
 
 <div class="container-fluid">
+<nav class="navbar navbar-inverse navbar-fixed-top" style="padding:1%">
+  <div class="container-fluid">
+    <div class="navbar-header">
+     
+    </div>
+ 
+     <table class="nav navbar-nav">
+	<tr>
+		<td style="border: none;" class="style">Player Name: </td><td style="border: none;"  class="styles" id="playerName" >Anonymous&nbsp;&nbsp;</td>
+		<td style="border: none;" class="style" >&nbsp;&nbsp;Level:</td><td  style="border: none;"  id="level"  class="styles">1&nbsp;&nbsp;</td>
+		<td  style="border: none;"  class="style" >Score:</td><td style="border: none;"  id="score" class="styles">0&nbsp;&nbsp;</td>
+		<td  style="border: none;"  class="style" >High Score:<td  style="border: none;"  id="highScore">0&nbsp;&nbsp;</td>
+		<td  style="border: none;" ><span class="glyphicon glyphicon-heart"></span></td><td  style="border: none;"  id="live"  class="style">3</td>
+	</tr>
+</table>
+  
+  </div>
+</nav>
+
 	<div class="col-md-9">
 		<div class="canv">
-			<canvas id="myCanvas" width="1008" height="654"></canvas>
+			<canvas id="myCanvas" width="1326" height="550" style="position: fixed;"></canvas>
 		</div>
 	</div>
 	<div class="col-md-3">
-	<table class="table table-bordered">
-		<tr>
-			<td>Player Name:</td><td id="playerName"></td>
-		</tr>
-		<tr>
-			<td>Level:</td><td id="level">1</td>
-
-		</tr>
-		<tr>
-			<td>Score:</td><td id="score"></td>
-
-		</tr>
-		<tr>
-			<td>High Score:<td id="highScore">0</td>
-
-		</tr>
-		<tr>
-			<td><span class="glyphicon glyphicon-heart"></span></td><td id="live">3</td>
-		</tr>
-		
-	</table>
 	
 	</div>
+</div>
+<div id="myModal" class="modal fade" role="dialog" style="margin-top:10%;position:absolute;max-width:50%;margin-left: 20%;padding:5%">
+  <div class="container modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+      
+       <span class="input-group">
+      	<span class="input-group-addon">
+      	<span class="glyphicon  glyphicon-user" style="color: green"></span></span>
+        <div class="modal-title" style="color:black;">
+        <input type="text" name="" class="form-control" placeholder="specify your identity:" disabled=""
+        style="font-size: 20px;font-family: verdana;">
+        </div>
+        </span>
+      </div>
+      <div class="modal-body">
+        <!--<p style="color:green;">NEXT LEVEL!!!!.... </p>-->
+        <span class="input-group">
+      	<span class="input-group-addon">
+      		<!--<span class="glyphicon  glyphicon-user"></span>-->
+      		<span style="font-family:'Arial Black', Gadget, sans-serif;color: green"><em>CAPTAIN</em></span>
+      	</span>
+      	 <input type="text" name="" class="form-control" id="Name" style="font-family:'Arial Black', Gadget, sans-serif;padding: 4%;">
+      </span>
+      
+      </div>
+    </div>
+
+  </div>
 </div>
 <script>
 var canvas;
 var ctx;
-var width = 1008;
-var height = 654;
+var width = 1326;
+var height = 550;
 //enemy variables
 var enemy_x = 40;
 var enemy_y = -130;
 var enemy_width = 52;
 var enemy_height = 112;
-var enemyNo = 8;
+var enemyNo = 12;
 var enemyArray = [];
 var ppf = 1;
 //shuttle variables
@@ -105,28 +149,92 @@ var livesLeft = document.getElementById('live');
 var playLevel = document.getElementById("level");
 var enemy_reset_x = 50;
 var nameEntered = document.getElementById('playerName');
+
+
+//mayo
+var rectX =170;
 for(var i=0; i<enemyNo; i++){
 	enemyArray.push([enemy_x, enemy_y, enemy_width, enemy_height, ppf]);
 	enemy_x +=enemy_width+65;
+		}
+		canvas = document.getElementById("myCanvas");
+	ctx = canvas.getContext("2d");
+	ctx.fillStyle='#FFF000'
+	ctx.rect(rectX,250,670,100);
+$('#bhody').keydown(function(event)
+{
+	
+	
+	if (event.which == 13) {
+		if(ctx.isPointInPath(rectX, 250))
+		{
+			rectX-=50;
+			var sss=$('#myModal').modal({backdrop:'static'});
+			//sss.slideToggle(800)
+			begin();
+			setInterval(home,20);
+
+		}
+		
+	}
+})
+
+function message()
+{
+
+	canvas = document.getElementById("myCanvas");
+	ctx = canvas.getContext("2d");
+	ctx.font="70px Tahoma, Geneva, sans-serif";
+	ctx.fillStyle = "white";
+	ctx.textAlign = "center";
+	ctx.fillText("Click Enter To Begin", canvas.width/2, canvas.height/2);
 }
 function begin(){
 	background.loop=true;
 	background.play();
-	name = prompt("please enter your name below");
-	nameEntered.innerHTML = name;
-	if(name==""){
-	nameEntered.innerHTML = "Anonymous";
+	
+	//alert(document.getElementById('Name'));
+
+	$('#myModal').keydown(function(event)
+{
+	
+	
+	if (event.which == 13) {
+		if(document.getElementById('Name').value == '')
+		{
+			//alert('your name pls...')
+		nameEntered.innerHTML = 'Anonymous'
+		canvas = document.getElementById("myCanvas");
+		ctx = canvas.getContext("2d");
+		shuttleImg = new Image();
+		shuttleImg.src = 'images/shuttle.png';
+		enemyImg = new Image();
+		enemyImg.src = 'images/enemy-mod.png';
+		scoreBoard= document.getElementById("score")
+		scoreBoard.innerHTML = 0;
+		document.addEventListener('keydown', keyDownHandler, false);
+		document.addEventListener('keyup', keyUpHandler, false);
+			$('#myModal').modal('hide');
+		}
+		else
+		{
+			nameEntered.innerHTML ='captain ' +document.getElementById('Name').value;
+		canvas = document.getElementById("myCanvas");
+		ctx = canvas.getContext("2d");
+		shuttleImg = new Image();
+		shuttleImg.src = 'images/shuttle.png';
+		enemyImg = new Image();
+		enemyImg.src = 'images/enemy-mod.png';
+		scoreBoard= document.getElementById("score")
+		scoreBoard.innerHTML = 0;
+		document.addEventListener('keydown', keyDownHandler, false);
+		document.addEventListener('keyup', keyUpHandler, false);
+			$('#myModal').modal('hide');
+		}
 	}
-	canvas = document.getElementById("myCanvas");
-	ctx = canvas.getContext("2d");
-	shuttleImg = new Image();
-	shuttleImg.src = 'images/shuttle.png';
-	enemyImg = new Image();
-	enemyImg.src = 'images/enemy-mod.png';
-	scoreBoard= document.getElementById("score")
-	scoreBoard.innerHTML = 0;
-	document.addEventListener('keydown', keyDownHandler, false);
-	document.addEventListener('keyup', keyUpHandler, false);
+})
+	
+	
 }
 function keyDownHandler(e){
 	if(e.keyCode==39){
@@ -144,6 +252,7 @@ function keyDownHandler(e){
 		laser.play();
 	}
 }
+
 function keyUpHandler(e){
 	if(e.keyCode==39){
 		rightPressed=false;
@@ -292,8 +401,8 @@ function home(){
 	level();
 //}
 }
-setInterval(home,20);
-window.onload = begin();
+// setInterval(home,20);
+window.onload = message();
 </script>
 <!--<script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/jquery-3.1.1.js"></script>-->
 <!--<script type="text/javascript" src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>-->

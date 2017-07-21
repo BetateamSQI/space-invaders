@@ -1,0 +1,1 @@
+alert("This sis comng from the external file") ;

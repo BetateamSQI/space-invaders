@@ -3,6 +3,10 @@
 <head>
 	<title>stable-2</title>
 	<link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
 	<style>
 	body{
 		background: #000000;
@@ -36,7 +40,7 @@
 	}
 	</style>
 </head>
-<body>
+<body id="bhody">
 
 <div class="container-fluid">
 	<div class="col-md-9">
@@ -105,10 +109,42 @@ var livesLeft = document.getElementById('live');
 var playLevel = document.getElementById("level");
 var enemy_reset_x = 50;
 var nameEntered = document.getElementById('playerName');
+var rectx = 170;
 for(var i=0; i<enemyNo; i++){
 	enemyArray.push([enemy_x, enemy_y, enemy_width, enemy_height, ppf]);
 	enemy_x +=enemy_width+65;
 }
+canvas = document.getElementById("myCanvas");
+	ctx = canvas.getContext("2d");
+	ctx.fillStyle='#FFF000'
+	ctx.rect(rectx,250,670,100)
+$('#bhody').keydown(function(event)
+{
+	
+	if(event.which == 13)
+	{
+		if(ctx.isPointInPath(rectx,250))
+		{
+			
+			rectx -=50;
+			begin();
+			setInterval(home,20);
+		}
+		
+	}
+	
+})
+function message()
+{
+
+	canvas = document.getElementById("myCanvas");
+	ctx = canvas.getContext("2d");
+	ctx.font='70px verdana';
+	ctx.fillStyle='white';
+	ctx.textAlign = 'center';
+	ctx.fillText('press enter to begin',canvas.width/2 , canvas.height/2);
+}
+
 function begin(){
 	background.loop=true;
 	background.play();
@@ -292,8 +328,9 @@ function home(){
 	level();
 //}
 }
-setInterval(home,20);
-window.onload = begin();
+//setInterval(home,20);
+//window.onload = begin();
+window.onload = message()
 </script>
 <!--<script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/jquery-3.1.1.js"></script>-->
 <!--<script type="text/javascript" src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>-->

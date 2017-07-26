@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>stable-2</title>
-	<link type="text/css" rel="stylesheet" href="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.css" />
+	<link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.css" />
 	<style>
 	body{
 		background: #000000;
@@ -29,7 +29,7 @@
 		font-size: 30px;
 	}
 	canvas{ 
-		background-image: url('space-mod.jpg');
+		background-image: url('images/space-mod.jpg');
 		margin: 0;
 		padding: 0;
 		border: solid 1px red;
@@ -93,10 +93,10 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var bulletArray=[];
-var explode = new Audio('explosion.mp3');
-var laser = new Audio('laserr.mp3');
-var background = new Audio('background.mp3');
-var lose = new Audio('lose.mp3');
+var explode = new Audio('sound/explosion.mp3');
+var laser = new Audio('sound/laserr.mp3');
+var background = new Audio('sound/background.mp3');
+var lose = new Audio('sound/lose.mp3');
 var scoreBoard;
 //var dead = false;
 var livesLeft = document.getElementById('live');
@@ -118,9 +118,9 @@ function begin(){
 	canvas = document.getElementById("myCanvas");
 	ctx = canvas.getContext("2d");
 	shuttleImg = new Image();
-	shuttleImg.src = 'shuttle.png';
+	shuttleImg.src = 'images/shuttle.png';
 	enemyImg = new Image();
-	enemyImg.src = 'enemy-mod.png';
+	enemyImg.src = 'images/enemy-mod.png';
 	scoreBoard= document.getElementById("score")
 	scoreBoard.innerHTML = 0;
 	document.addEventListener('keydown', keyDownHandler, false);

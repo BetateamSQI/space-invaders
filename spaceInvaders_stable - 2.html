@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>stable-2</title>
-	<link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+	<link type="text/css" rel="stylesheet" href="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/css/bootstrap.css" />
 	<style>
 	body{
 		background: #000000;
@@ -29,7 +29,7 @@
 		font-size: 30px;
 	}
 	canvas{ 
-		background-image: url('images/space-mod.jpg');
+		background-image: url('space-mod.jpg');
 		margin: 0;
 		padding: 0;
 		border: solid 1px red;
@@ -87,18 +87,16 @@ var shuttle_width = 86;
 var shuttle_height = 148;
 var shuttle_x = (width/2)-(shuttle_width/2);
 var shuttle_y = height-shuttle_height-30;
-var sppf = 4;
-//buttons
+var sppf = 4
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var bulletArray=[];
-//sound
-var explode = new Audio('sound/explosion.mp3');
-var laser = new Audio('sound/laserr.mp3');
-var background = new Audio('sound/background.mp3');
-var lose = new Audio('sound/lose.mp3');
+var explode = new Audio('explosion.mp3');
+var laser = new Audio('laserr.mp3');
+var background = new Audio('background.mp3');
+var lose = new Audio('lose.mp3');
 var scoreBoard;
 //var dead = false;
 var livesLeft = document.getElementById('live');
@@ -109,26 +107,10 @@ for(var i=0; i<enemyNo; i++){
 	enemyArray.push([enemy_x, enemy_y, enemy_width, enemy_height, ppf]);
 	enemy_x +=enemy_width+65;
 }
-//this enables user to either restart or quit the game.
-function quit() {
-
-    var r = confirm("Do You Wish To Continue!" + " " + name);
-    if (r == true) {
-    //location.reload();
-	livesLeft.innerHTML=3;
-		lose.play();
-		repositioning();	
-    } 
-	else {
-		window.close();
-     // location.href="a.html";
-    }
-}
-
 function begin(){
 	background.loop=true;
 	background.play();
-	name = prompt("Please enter your name below");
+	name = prompt("please enter your name below");
 	nameEntered.innerHTML = name;
 	if(name==""){
 	nameEntered.innerHTML = "Anonymous";
@@ -136,9 +118,9 @@ function begin(){
 	canvas = document.getElementById("myCanvas");
 	ctx = canvas.getContext("2d");
 	shuttleImg = new Image();
-	shuttleImg.src = 'images/shuttle.png';
+	shuttleImg.src = 'shuttle.png';
 	enemyImg = new Image();
-	enemyImg.src = 'images/enemy-mod.png';
+	enemyImg.src = 'enemy-mod.png';
 	scoreBoard= document.getElementById("score")
 	scoreBoard.innerHTML = 0;
 	document.addEventListener('keydown', keyDownHandler, false);
@@ -184,6 +166,12 @@ function moveShuttle(){
 	}else if(downPressed && shuttle_y<(height-shuttle_height)){
 		shuttle_y +=sppf;
 	}
+	/*if(leftPressed){
+		shuttle_x-=5;
+		if(shuttle_x<=0){
+			shuttle_x = width-shuttle_width
+		}
+	}*/
 }
 function drawShuttle(){
 	ctx.drawImage(shuttleImg,shuttle_x,shuttle_y);
@@ -238,20 +226,23 @@ function checkLife(){
 		repositioning();
 }else if(livesLeft.innerHTML==1){
 		livesLeft.innerHTML = 0;
-		if (livesLeft.innerHTML == 0)
-		{
-			alert ('Game Over');
-			quit() ;
-		//location.reload();	
-		}
-		
-		//livesLeft.innerHTML=3;
-		//lose.play();
-		//repositioning();
+		//location.reload();
+		livesLeft.innerHTML=3;
+		lose.play();
 		if(scoreBoard.innerHTML>highScore.innerHTML){
 			highScore.innerHTML = scoreBoard.innerHTML;
 		}
 		scoreBoard.innerHTML=0;	//bug;	
+		var decision = confirm('Game Over!\nClick ok to continue and cancel to close the window')
+		if(decision== true){
+		repositioning();
+		}else{
+			window.close()
+		}
+		rightPressed = false;
+		leftPressed = false;
+		upPressed = false;
+		downPressed = false;
 	}
 
 }
@@ -317,7 +308,7 @@ function home(){
 setInterval(home,20);
 window.onload = begin();
 </script>
-<!--<script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/jquery-3.1.1.js"></script>-->
-<!--<script type="text/javascript" src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>-->
+<script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
 </body>
 </html>

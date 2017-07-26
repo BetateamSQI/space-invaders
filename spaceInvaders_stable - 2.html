@@ -75,24 +75,29 @@ var ctx;
 var width = 1008;
 var height = 654;
 //enemy variables
-var enemy_x = 40;
-var enemy_y = -130;
+var enemy_x = 55;
+var enemy_y = -100;
 var enemy_width = 52;
 var enemy_height = 112;
 var enemyNo = 8;
 var enemyArray = [];
 var ppf = 1;
+var enemyBullet_x = enemy_x+(enemy_width/2)-5;
+var enemyBullet_y = enemy_y+enemy_height;
+var enemyBulletArray=[];
 //shuttle variables
 var shuttle_width = 86;
 var shuttle_height = 148;
 var shuttle_x = (width/2)-(shuttle_width/2);
 var shuttle_y = height-shuttle_height-30;
-var sppf = 4
+var sppf = 4;
+//buttons
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var bulletArray=[];
+//sound
 var explode = new Audio('sound/explosion.mp3');
 var laser = new Audio('sound/laserr.mp3');
 var background = new Audio('sound/background.mp3');
@@ -101,11 +106,11 @@ var scoreBoard;
 //var dead = false;
 var livesLeft = document.getElementById('live');
 var playLevel = document.getElementById("level");
-var enemy_reset_x = 50;
 var nameEntered = document.getElementById('playerName');
 for(var i=0; i<enemyNo; i++){
-	enemyArray.push([enemy_x, enemy_y, enemy_width, enemy_height, ppf]);
+	enemyArray.push([enemy_x, enemy_y, enemy_width, enemy_height, ppf, enemyBullet_x, enemyBullet_y]);
 	enemy_x +=enemy_width+65;
+	//enemyBullet_x +=enemy_width+65;
 }
 function begin(){
 	background.loop=true;
@@ -138,7 +143,12 @@ function keyDownHandler(e){
 		downPressed = true
 	}
 	if(e.keyCode == 32){
+		if(playLevel.innerHTML==4){
+		bulletArray.push([shuttle_x+12, shuttle_y-34, 5,30]);
+		bulletArray.push([shuttle_x+shuttle_width-19, shuttle_y-34, 5,30]);}
+		else{
 		bulletArray.push([shuttle_x+(shuttle_width/2)-3, shuttle_y-34, 5,30]);
+		}
 		laser.play();
 	}
 }
@@ -166,12 +176,6 @@ function moveShuttle(){
 	}else if(downPressed && shuttle_y<(height-shuttle_height)){
 		shuttle_y +=sppf;
 	}
-	/*if(leftPressed){
-		shuttle_x-=5;
-		if(shuttle_x<=0){
-			shuttle_x = width-shuttle_width
-		}
-	}*/
 }
 function drawShuttle(){
 	ctx.drawImage(shuttleImg,shuttle_x,shuttle_y);
@@ -179,7 +183,12 @@ function drawShuttle(){
 }
 function drawBullet(){
 	for(var i=0; i<bulletArray.length; i++){
+		if(playLevel.innerHTML==4){
+			ctx.fillStyle = "white";
+		}else{
 		ctx.fillStyle = "red";
+	}
+	//move bullet
 		ctx.fillRect(bulletArray[i][0], bulletArray[i][1], bulletArray[i][2], bulletArray[i][3]);
 		if(bulletArray[i][1]>-35){
 			bulletArray[i][1] -= 10;
@@ -189,15 +198,13 @@ function drawBullet(){
 function hitBullet(){
 	for(var i=0; i<bulletArray.length; i++){
 		for(var j=0; j<enemyArray.length; j++){
-			if(bulletArray[i][0]>=enemyArray[j][0] && bulletArray[i][0]<=enemyArray[j][2]+enemyArray[j][0] && bulletArray[i][1]<=enemyArray[j][1]+enemyArray[j][2] && bulletArray[i][1]>=enemyArray[j][1]){
-				//remove = true;
+			if(bulletArray[i][0]>=enemyArray[j][0] && bulletArray[i][0]<=enemyArray[j][2]+enemyArray[j][0] && bulletArray[i][1]<=enemyArray[j][1]+enemyArray[j][2] && bulletArray[i][1]>=enemyArray[j][1] && bulletArray[i][1]>=0){
 				enemyArray.splice(j,1);
-				enemyArray.push([(Math.random()*800), -130, enemy_width, enemy_height,ppf]);
-				//if(remove==true){
+				var xRand = (Math.random()*800)
+				enemyArray.push([xRand, -100, enemy_width, enemy_height,ppf]);
+				enemyBulletArray.push([xRand+(enemy_width/2), enemy_y+enemy_height]);
 				bulletArray.splice(i,1);
-				//remove=false;
 				scoreBoard.innerHTML=parseInt(scoreBoard.innerHTML)+5;
-				//}
 			}
 		}
 	}
@@ -217,6 +224,16 @@ function shuttleCollide(){
 }
 }
 
+function enemyBulletHit(){
+	if(playLevel.innerHTML==4){
+	for(var i=0; i<enemyBulletArray.length; i++){
+		if(enemyBulletArray[i][0]<=shuttle_x+shuttle_width && enemyBulletArray[i][0]>=shuttle_x && enemyBulletArray[i][1]+10>=shuttle_y){
+			alert('boom')
+		}
+	}
+	}
+}
+
 function checkLife(){
 	highScore = document.getElementById("highScore");
 	if(livesLeft.innerHTML>1){
@@ -225,14 +242,16 @@ function checkLife(){
 		livesLeft.innerHTML -=1;
 		repositioning();
 }else if(livesLeft.innerHTML==1){
-		livesLeft.innerHTML = 0;
+		//livesLeft.innerHTML = 0;
 		//location.reload();
+		explode.play();
 		livesLeft.innerHTML=3;
 		lose.play();
-		if(scoreBoard.innerHTML>highScore.innerHTML){
-			highScore.innerHTML = scoreBoard.innerHTML;
+		repositioning();
+		if(parseInt(scoreBoard.innerHTML)>parseInt(highScore.innerHTML)){
+			highScore.innerHTML = parseInt(scoreBoard.innerHTML);
 		}
-		scoreBoard.innerHTML=0;	//bug;	
+		scoreBoard.innerHTML=0;	
 		var decision = confirm('Game Over!\nClick ok to continue and cancel to close the window')
 		if(decision== true){
 		repositioning();
@@ -273,19 +292,34 @@ function moveEnemy(){
 			enemyArray[i][1] += enemyArray[i][4];
 		}else if(enemyArray[i][1] > height-1){
 			enemyArray[i][1] = -130;
+			enemyArray[i][0]=Math.random()*800;
 		}
 	}
+}
+function enemyBullet(){
+	if(playLevel.innerHTML==4){
+		for(var i=0; ; i++){
+			ctx.fillStyle="pink";
+			ctx.fillRect(enemyBulletArray[i][0], enemyBulletArray[i][1], 5, 10);
+			enemyBulletArray[i][1]+=7;
+		}
+		}
 }
 
 function level(){
 	if(scoreBoard.innerHTML>=1000 && scoreBoard.innerHTML<1800){
 		playLevel.innerHTML = 2;
 		ppf=2;
-		sppf=5
-	}else if(scoreBoard.innerHTML>=1800){
+		sppf=5;
+		
+	}else if(scoreBoard.innerHTML>=1800 && scoreBoard.innerHTML<3000){
 		playLevel.innerHTML = 3;
-		ppf=5;
+		ppf=3.5;
 		sppf=7;
+	}else if(scoreBoard.innerHTML>=3000){
+		playLevel.innerHTML = 4;
+		ppf = 5;
+		sppf = 9;
 	}else{
 		playLevel.innerHTML = 1;
 		ppf=1;
@@ -295,20 +329,26 @@ function level(){
 
 function home(){
 	clearCanvas();
-	//if(dead==false){
+	level();
 	drawShuttle();
 	drawEnemy();
 	moveEnemy();
 	drawBullet();
 	hitBullet();
 	shuttleCollide();
-	level();
-//}
+	//enemyBulletHit();
+	enemyBullet();
+	
 }
 setInterval(home,20);
 window.onload = begin();
+//level 1: single laser, slow speed;
+//level 2: single laser, increased speed;
+//level 3: single laser, increased speed;
+//level 4: double laser, enemies shoot, increased speed;
+//level 5: STILL LOADING!
 </script>
-<script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/jquery-3.1.1.js"></script>
-<script type="text/javascript" src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<!--<script src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/jquery-3.1.1.js"></script>-->
+<!--<script type="text/javascript" src="bootstrap-3.3.7-dist/bootstrap-3.3.7-dist/js/bootstrap.js"></script>-->
 </body>
 </html>
